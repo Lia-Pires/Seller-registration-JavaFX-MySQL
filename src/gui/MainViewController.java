@@ -32,7 +32,7 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	public void onMenuItemDepartmentAction() {
-		System.out.println("onMenuItemDepartmentAction");
+		loadView("/gui/DepartmentList.fxml");
 	}
 	
 	@FXML
@@ -45,7 +45,8 @@ public class MainViewController implements Initializable {
 	}
 	
 	//absolute name porque vai passar o caminho completo
-	private void loadView(String absoluteName) {
+	//synchronized garante que o que tem no try vai ser executado sem ser interrompido
+	private synchronized void loadView(String absoluteName) {
 		try {
 			//instanciar o objeto do tipo Loader
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
