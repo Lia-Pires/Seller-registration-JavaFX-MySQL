@@ -1,25 +1,40 @@
 package application;
-	
-import javafx.application.Application;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 
+import java.io.IOException;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			BorderPane root = new BorderPane();
-			Scene scene = new Scene(root,400,400);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			primaryStage.setScene(scene);
+			// Instanciando um objeto do tipo FXMLLoader + passar o caminh oda View
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainView.fxml"));
+			
+			//chama o loader.load
+			Parent parent = loader.load();
+			
+			// Cria um objeto do tipo Scene e instancia com o argumento parent (objeto principalo da view)
+			Scene mainScene = new Scene(parent);
+			
+			//palco da cena: seta a cena com a cena principal
+			primaryStage.setScene(mainScene);
+			
+			//título do palco
+			primaryStage.setTitle("Sample JavaFX application");
+			
+			//mostrar o palco
 			primaryStage.show();
-		} catch(Exception e) {
+			
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
