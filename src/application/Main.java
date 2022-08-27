@@ -14,26 +14,26 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			// Instanciando um objeto do tipo FXMLLoader + passar o caminh oda View
+			//Instanciando um objeto do tipo FXMLLoader + passar o caminho da View
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainView.fxml"));
 			
-			//chama o loader.load
+			//Chama o loader.load
 			ScrollPane scrollPane = loader.load();
 			
-			// Cria um objeto do tipo Scene e instancia com o argumento parent (objeto principalo da view)
+			//Cria um objeto do tipo Scene e instancia com o argumento parent (objeto principalo da view)
 			mainScene = new Scene(scrollPane);
 			
 			//Ajustar ScrollPane à altura/largura
 			scrollPane.setFitToHeight(true);
 			scrollPane.setFitToWidth(true);
 			
-			//palco da cena: seta a cena com a cena principal
+			//Palco da cena: seta a cena com a cena principal
 			primaryStage.setScene(mainScene);
 			
-			//título do palco
+			//Título do palco
 			primaryStage.setTitle("Sample JavaFX application");
 			
-			//mostrar o palco
+			//Mostrar o palco
 			primaryStage.show();
 			
 		} catch (IOException e) {
@@ -41,7 +41,7 @@ public class Main extends Application {
 		}
 	}
 
-	// para referenciar o mainScene pois é privado
+	//Para referenciar o mainScene pois é privado
 	public static Scene getMainScene() {
 		return mainScene;
 	}
