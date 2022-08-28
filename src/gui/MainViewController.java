@@ -19,7 +19,8 @@ import javafx.scene.layout.VBox;
 import model.services.DepartmentService;
 
 public class MainViewController implements Initializable {
-	//menu Item + nome
+	
+	//Menu Item + nome
 	@FXML 
 	private MenuItem menuItemSeller;
 	@FXML 
@@ -49,20 +50,20 @@ public class MainViewController implements Initializable {
 	public void initialize(URL url, ResourceBundle rb) {	 		
 	}
 	
-	//absolute name porque vai passar o caminho completo
+	//Absolute name porque vai passar o caminho completo
 	//synchronized garante que o que tem no try vai ser executado sem ser interrompido
 	private synchronized <T> void loadView(String absoluteName, Consumer<T> initializingAction) {
 		try {
-			//instanciar o objeto do tipo Loader
+			//Instanciar o objeto do tipo Loader
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			VBox newVBox = loader.load(); 
 			
 			Scene mainScene = Main.getMainScene(); 
 			VBox mainVBox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
 			
-			// referência do mainMenu, o 0 quer dizer que é o primeiro filho do VBox, ou seja o mainMenu
+			//Referência do mainMenu, o 0 quer dizer que é o primeiro filho do VBox, ou seja o mainMenu
 			Node mainMenu = mainVBox.getChildren().get(0);
-			// limpa todos os filhos do VBox
+			//Limpa todos os filhos do VBox
 			mainVBox.getChildren().clear();
 			//Adicionar mainMenu e os filhos do VBox
 			mainVBox.getChildren().add(mainMenu);
