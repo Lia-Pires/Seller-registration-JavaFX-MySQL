@@ -1,11 +1,9 @@
 package gui;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
 import application.Main;
 import db.DbIntegrityException;
 import gui.listeners.DataChangeListener;
@@ -32,88 +30,60 @@ import javafx.stage.Stage;
 import model.entities.Department;
 import model.services.DepartmentService;
 
-public class DepartmentListController implements Initializable, DataChangeListener {
-	
-	private DepartmentService service;   //colocando o = new DepartmentService gera acoplamento forte, não é a melhor solução no caso, melhor usar um setter
 
+public class DepartmentListController implements Initializable, DataChangeListener {
+	private DepartmentService service;
 	@FXML
 	private TableView<Department> tableViewDepartment;
-	
 	@FXML
 	private TableColumn<Department, Integer> tableColumnId;
-	           
 	@FXML
 	private TableColumn<Department, String> tableColumnName;
-	
 	@FXML
 	private TableColumn<Department, Department> tableColumnEDIT;
-	
 	@FXML
 	private TableColumn<Department, Department> tableColumnREMOVE;
-	
 	@FXML
 	private Button btNew;
-	
-	//vou carregar os departamentos nessa ObservableList e associar com o TableView
 	private ObservableList<Department> obsList;
-	
 	@FXML
 	public void onBtNewAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
 		Department obj = new Department();
 		createDialogForm(obj, "/gui/DepartmentForm.fxml", parentStage);
 	}
-	
 	public void setDepartmentService(DepartmentService service) {
 		this.service = service;
-		// injetar dependência - princípio SOLID - inversão de controle
 	}
-	
 	@Override
-	public void initialize(URL url, ResourceBundle rb) {	
-		 inicializeNodes();
+	public void initialize(URL url, ResourceBundle rb) {
+		initializeNodes();
 	}
-
-	
-	//método auxiliar para iniciar algum componente da tela
-	private void inicializeNodes() {
-		// comando para iniciar apropriadamente o comportamento das colunas da tabela
+	private void initializeNodes() {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-		
-		//referenciar o Stage - usar downcast
 		Stage stage = (Stage) Main.getMainScene().getWindow();
-		//comando para a tabela acompanhar o tamanho da janela
-		tableViewDepartment.prefHeightProperty().bind(stage.heightProperty());		
+		tableViewDepartment.prefHeightProperty().bind(stage.heightProperty());
 	}
-	
-	//método responsável por acessar o serviço, carregar o departamento e colocar na ObservableList
 	public void updateTableView() {
 		if (service == null) {
-			throw new IllegalStateException("Service wal null");
+			throw new IllegalStateException("Service was null");
 		}
-		//vai recuperar os dados
 		List<Department> list = service.findAll();
-		//carregarar list na observableList (instancia a obslist pegando os dados originais da list
 		obsList = FXCollections.observableArrayList(list);
-		//carregar os itens na tableview e mostrar na tela
 		tableViewDepartment.setItems(obsList);
 		initEditButtons();
 		initRemoveButtons();
 	}
-	
 	private void createDialogForm(Department obj, String absoluteName, Stage parentStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load();
-			
-
 			DepartmentFormController controller = loader.getController();
 			controller.setDepartment(obj);
 			controller.setDepartmentService(new DepartmentService());
 			controller.subscribeDataChangeListener(this);
 			controller.updateFormData();
-
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Enter Department data");
 			dialogStage.setScene(new Scene(pane));
@@ -121,26 +91,19 @@ public class DepartmentListController implements Initializable, DataChangeListen
 			dialogStage.initOwner(parentStage);
 			dialogStage.initModality(Modality.WINDOW_MODAL);
 			dialogStage.showAndWait();
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
+			e.printStackTrace();
 			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
 		}
-		
-
-	
 	}
-
 	@Override
 	public void onDataChanged() {
 		updateTableView();
-		
 	}
-
 	private void initEditButtons() {
 		tableColumnEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		tableColumnEDIT.setCellFactory(param -> new TableCell<Department, Department>() {
 			private final Button button = new Button("edit");
-
 			@Override
 			protected void updateItem(Department obj, boolean empty) {
 				super.updateItem(obj, empty);
@@ -154,12 +117,10 @@ public class DepartmentListController implements Initializable, DataChangeListen
 			}
 		});
 	}
-	
 	private void initRemoveButtons() {
 		tableColumnREMOVE.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		tableColumnREMOVE.setCellFactory(param -> new TableCell<Department, Department>() {
 			private final Button button = new Button("remove");
-
 			@Override
 			protected void updateItem(Department obj, boolean empty) {
 				super.updateItem(obj, empty);
@@ -172,29 +133,8 @@ public class DepartmentListController implements Initializable, DataChangeListen
 			}
 		});
 	}
-
-
-	private void initRemoveButtons() {
-		tableColumnREMOVE.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-		tableColumnREMOVE.setCellFactory(param -> new TableCell<Department, Department>() {
-			private final Button button = new Button("remove");
-
-			@Override
-			protected void updateItem(Department obj, boolean empty) {
-				super.updateItem(obj, empty);
-				if (obj == null) {
-					setGraphic(null);
-					return;
-				}
-				setGraphic(button);
-				button.setOnAction(event -> removeEntity(obj));
-			}
-		});
-	}
-
 	private void removeEntity(Department obj) {
 		Optional<ButtonType> result = Alerts.showConfirmation("Confirmation", "Are you sure to delete?");
-
 		if (result.get() == ButtonType.OK) {
 			if (service == null) {
 				throw new IllegalStateException("Service was null");
@@ -208,5 +148,4 @@ public class DepartmentListController implements Initializable, DataChangeListen
 			}
 		}
 	}
-
 }
